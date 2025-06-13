@@ -34,6 +34,7 @@ jobs:
       env:
         LINUXTOYS_VERSION: ${{ steps.read_version_file.outputs.version }}
       run: |
+        sudo mkdir -p /var/lib/pacman
         sudo chmod 755 /var/lib/pacman
         sudo mv /var/lib/pacman /var/lib/pacman.backup
         sudo pacman -Syy pacman --noconfirm
