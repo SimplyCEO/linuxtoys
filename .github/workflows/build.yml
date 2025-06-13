@@ -34,6 +34,11 @@ jobs:
       env:
         LINUXTOYS_VERSION: ${{ steps.read_version_file.outputs.version }}
       run: |
+        sudo chmod 755 /var/lib/pacman
+        sudo mv /var/lib/pacman /var/lib/pacman.backup
+        sudo pacman -Syy pacman --noconfirm
+        sudo mv /var/lib/pacman.backup/local /var/lib/pacman
+        sudo pacman-db-upgrade
         pushd src/buildfiles/pkgbuild
         makepkg -s
         mv linuxtoys-${LINUXTOYS_VERSION}-1-x86_64.pkg.tar.zst ../../../
