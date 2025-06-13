@@ -24,26 +24,11 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential devscripts rpm libalpm13 libarchive13 libc6 pacman-package-manager makepkg
+        sudo apt-get install -y build-essential devscripts rpm
 
     - name: Prepare version
       id: read_version_file
       run: echo "{name}=$(cat src/ver)" >> $GITHUB_OUTPUT
-
-    - name: Build AUR package
-      env:
-        LINUXTOYS_VERSION: ${{ steps.read_version_file.outputs.version }}
-      run: |
-        sudo mkdir -p /var/lib/pacman
-        sudo chmod 755 /var/lib/pacman
-        sudo mv /var/lib/pacman /var/lib/pacman.backup
-        sudo pacman -Syy pacman --noconfirm
-        sudo mv /var/lib/pacman.backup/local /var/lib/pacman
-        sudo pacman-db-upgrade
-        pushd src/buildfiles/pkgbuild
-        makepkg -s
-        mv linuxtoys-${LINUXTOYS_VERSION}-1-x86_64.pkg.tar.zst ../../../
-        popd
 
     - name: Build DEB package
       env:
@@ -71,14 +56,6 @@ jobs:
         mv RPMS/noarch/linuxtoys-${LINUXTOYS_VERSION}-1.noarch.rpm ../../../../linuxtoys-${LINUXTOYS_VERSION}-1_amd64.noarch.rpm
         popd
         popd
-
-    - name: Upload AUR package
-      uses: actions/upload-artifact@v4
-      env:
-        LINUXTOYS_VERSION: ${{ steps.read_version_file.outputs.version }}
-      with:
-        name: linuxtoys-${LINUXTOYS_VERSION}-1-x86_64.pkg.tar.zst
-        path: linuxtoys-${LINUXTOYS_VERSION}-1-x86_64.pkg.tar.zst
 
     - name: Upload DEB package
       uses: actions/upload-artifact@v4
