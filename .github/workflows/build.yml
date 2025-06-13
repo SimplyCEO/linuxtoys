@@ -53,7 +53,7 @@ jobs:
         tar -cJf rpmbuild/SOURCES/linuxtoys-${LINUXTOYS_VERSION}.tar.xz linuxtoys-${LINUXTOYS_VERSION}/
         pushd rpmbuild
         rpmbuild --define "_topdir `pwd`" -bb SPECS/linuxtoys.spec
-        mv RPMS/noarch/linuxtoys-${LINUXTOYS_VERSION}-1.noarch.rpm ../../../../linuxtoys-${LINUXTOYS_VERSION}-1_amd64.noarch.rpm
+        mv RPMS/x86_64/linuxtoys-${LINUXTOYS_VERSION}-1.x86_64.rpm ../../../../linuxtoys-${LINUXTOYS_VERSION}-1_amd64.x86_64.rpm
         popd
         popd
 
@@ -71,5 +71,5 @@ jobs:
         LINUXTOYS_VERSION: ${{ steps.read_version_file.outputs.version }}
       with:
         name: linuxtoys-${LINUXTOYS_VERSION}.rpm
-        path: linuxtoys-${LINUXTOYS_VERSION}-1_amd64.noarch.rpm
+        path: linuxtoys-${LINUXTOYS_VERSION}-1_amd64.x86_64.rpm
 
