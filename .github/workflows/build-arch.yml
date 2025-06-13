@@ -27,9 +27,10 @@ jobs:
         docker run --rm -v "$PWD:/workspace" -w /workspace archlinux:base-devel \
         bash -c "
           pacman -Syu --noconfirm &&
+          pacman -S --needed --noconfirm base-devel wget libnewt alacritty git &&
           useradd -m builder &&
           chown -R builder . &&
-          su builder -c 'cd src/buildfiles/pkgbuild && makepkg -s' &&
+          su builder -c 'cd src/buildfiles/pkgbuild && makepkg -s --noconfirm' &&
           cp src/buildfiles/pkgbuild/*.pkg.tar.* ./
         "
 
