@@ -44,12 +44,7 @@ jobs:
           su builder -c 'cd src/buildfiles/pkgbuild && makepkg -s --noconfirm' &&
           cp src/buildfiles/pkgbuild/*.pkg.tar.* ./
         "
-
-    - name: Fix workspace permissions
-      run: sudo chown -R $UID:$GID .
-      env:
-        UID: ${{ runner.uid }}
-        GID: ${{ runner.gid }}
+      sudo chown -R $(id -u):$(id -g) .
 
     - name: Build DEB package
       env:
