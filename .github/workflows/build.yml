@@ -45,6 +45,12 @@ jobs:
           cp src/buildfiles/pkgbuild/*.pkg.tar.* ./
         "
 
+    - name: Fix workspace permissions
+      run: sudo chown -R $UID:$GID .
+      env:
+        UID: ${{ runner.uid }}
+        GID: ${{ runner.gid }}
+
     - name: Build DEB package
       env:
         LINUXTOYS_VERSION: ${{ steps.read_version_file.outputs.version }}
@@ -77,8 +83,8 @@ jobs:
       env:
         LINUXTOYS_VERSION: ${{ steps.read_version_file.outputs.version }}
       with:
-        name: linuxtoys-${LINUXTOYS_VERSION}-1-x86_64.pkg.tar.zst
-        path: linuxtoys-${LINUXTOYS_VERSION}-1-x86_64.pkg.tar.zst
+        name: linuxtoys-${LINUXTOYS_VERSION}-1-x86_64.pkg.tar.xz
+        path: linuxtoys-${LINUXTOYS_VERSION}-1-x86_64.pkg.tar.xz
 
     - name: Upload DEB package
       uses: actions/upload-artifact@v4
