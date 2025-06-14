@@ -44,7 +44,7 @@ jobs:
           su builder -c 'cd src/buildfiles/pkgbuild && makepkg -s --noconfirm' &&
           cp src/buildfiles/pkgbuild/*.pkg.tar.* ./
         "
-      sudo chown -R $(id -u):$(id -g) .
+        sudo chown -R $(id -u):$(id -g) .
 
     - name: Build DEB package
       env:
