@@ -103,6 +103,7 @@ obs_pipe () {
 }
 
 # runtime
+. /etc/os-release
 source /usr/bin/linuxtoys/linuxtoys.lib
 _lang_
 source /usr/bin/linuxtoys/${langfile}
@@ -143,6 +144,51 @@ if zenity --question --text "$msg280" --height=300 --width=300; then
         obs_pipe
         zenity --info --text "$msg036" --height=300 --width=300
     else
-        nonfatal "$msg077"
+        if command -v dnf &> /dev/null || command -v apt &> /dev/null || command -v zypper &> /dev/null || command -v pacman &> /dev/null; then
+            if zenity --question --text "$msg012" --width 360 --height 300; then
+                flatpak_in_lib
+                if [ "$ID" == "ubuntu" ]; then
+                    insta gnome-software gnome-software-plugin-flatpak gnome-software-plugin-snap
+                fi
+                cd $HOME
+                mkdir psypicks || exit 1
+                cd psypicks || exit 1
+                # enable RPMFusion non-free repositories for Fedora
+                if command -v dnf &> /dev/null; then
+                    sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -y
+                    sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
+                fi
+                # package setup
+                if command -v dnf &> /dev/null || command -v zypper &> /dev/null; then
+                    packages=(steam steam-devices lutris vlc)
+                elif command -v apt &> /dev/null; then
+                    packages=(steam-devices vlc)
+                elif command -v pacman &> /dev/null; then
+                    sudo sed -i -e '/^#\[multilib\]$/s/^#//' -e '/^#Include = \/etc\/pacman\.d\/mirrorlist$/s/^#//' /etc/pacman.conf
+                    sudo pacman -Syu
+                    packages=(steam steam-devices lutris vlc)
+                fi
+                if [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]]; then
+                    packages+=(gnome-tweaks)
+                fi
+                _install_
+                get_heroic
+                # flatpak setup
+                flatpaks=(org.prismlauncher.PrismLauncher io.missioncenter.MissionCenter com.github.tchx84.Flatseal com.vysp3r.ProtonPlus com.dec05eba.gpu_screen_recorder com.github.Matoking.protontricks com.obsproject.Studio com.discordapp.Discord)
+                if command -v apt &> /dev/null; then
+                    flatpaks+=(com.valvesoftware.Steam)
+                fi
+                if [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]]; then
+                    flatpaks+=(com.mattjakeman.ExtensionManager)
+                fi
+                _flatpak_
+                obs_pipe
+                zenity --info --text "$msg036" --height=300 --width=300
+            else
+                nonfatal "$msg077"
+            fi
+        else
+            nonfatal "$msg077"
+        fi
     fi
 fi
