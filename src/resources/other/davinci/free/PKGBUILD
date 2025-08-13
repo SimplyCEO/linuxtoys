@@ -11,7 +11,7 @@
 
 pkgname=davinci-resolve
 pkgver=20.1
-pkgrel=1
+pkgrel=0
 
 _product="DaVinci Resolve"
 _referid='ee1da4f13df74d72b6da783ead2ed875'
